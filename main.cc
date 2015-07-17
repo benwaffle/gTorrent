@@ -1,15 +1,6 @@
-#include <gtkmm.h>
+#include "app.h"
 
-#include <libtorrent/session.hpp>
-#include <memory>
-
-using namespace libtorrent;
-using namespace Glib;
-
-// unified builds are fast
-extern "C" {
-	#include "resources.c"
+int main(int argc, char *argv[])
+{
+    return App{}.run(argc, argv);
 }
-#include "util.cc"
-#include "libtorrent_gsource.cc"
-#include "ui.cc"

@@ -1,3 +1,8 @@
+#include <gtkmm.h>
+#include <libtorrent/session.hpp>
+
+#include "app.h"
+
 struct MagnetPopover : public Gtk::Popover
 {
     Gtk::Entry entry;
@@ -35,72 +40,56 @@ struct TorrentListRow : public Gtk::ListBoxRow
     }
 };
 
-struct App : public Gtk::Application
+void App::on_activate()
 {
-    session sess;
-    LTSource lt{sess};
+    Gtk::Application::on_activate();
 
-    Gtk::ApplicationWindow *window{nullptr};
-    Gtk::ListBox *torrent_list{nullptr};
-    Gtk::Button *open_file{nullptr};
-    Gtk::MenuButton *paste_link{nullptr};
-    Gtk::MenuButton *settings{nullptr};
+    auto builder = Gtk::Builder::create_from_resource("/gtorrent/window.ui");
 
-	void on_activate()
-	{
-		Gtk::Application::on_activate();
+    builder->get_widget("window", window);
+    builder->get_widget("torrent_list", torrent_list);
+    builder->get_widget("open_file", open_file);
+    builder->get_widget("paste_link", paste_link);
+    builder->get_widget("settings", settings);
 
-		auto builder = Gtk::Builder::create_from_resource("/gtorrent/window.ui");
+    this->add_window(*window);
+    new MagnetPopover(*paste_link);
 
-        builder->get_widget("window", window);
-        builder->get_widget("torrent_list", torrent_list);
-        builder->get_widget("open_file", open_file);
-        builder->get_widget("paste_link", paste_link);
-        builder->get_widget("settings", settings);
+    /*
+    button->signal_clicked().connect([&]() {
+            add_torrent_params add;
+            add.ti = new torrent_info("debian.torrent");
+            sess->async_add_torrent(add);
+    });
+    */
 
-		this->add_window(*window);
-        new MagnetPopover(*paste_link);
+    lt.attach();
+    lt.set_callback([&](libtorrent::alert *a) {
+        // std::string msg{a->what()}; msg += "\n";
+        delete a;
+    });
 
-		/*
-		button->signal_clicked().connect([&]() {
-			add_torrent_params add;
-			add.ti = new torrent_info("debian.torrent");
-			sess->async_add_torrent(add);
-		});
-		*/
+    for (int i{0}; i < 10; ++i)
+        torrent_list->add(*Gtk::manage(new TorrentListRow));
 
-		lt.attach();
-		lt.set_callback([&](alert *a){
-			// std::string msg{a->what()}; msg += "\n";
-			delete a;
-		});
+    window->show_all();
+}
 
-        for (int i{0}; i < 10; ++i)
-            torrent_list->add(*Gtk::manage(new TorrentListRow));
-
-		window->show_all();
-	}
-
-	App() :
-        Gtk::Application{"me.gtorrent"}
-	{
-		sess.set_alert_mask(alert::all_categories);
-		sess.start_dht();
-		sess.start_lsd();
-		sess.start_upnp();
-		sess.start_natpmp();
-	}
-
-	~App()
-	{
-		sess.stop_dht();
-		sess.stop_lsd();
-		sess.stop_upnp();
-		sess.stop_natpmp();
-	}
-};
-
-int main(int argc, char *argv[])
+App::App() :
+    Gtk::Application{"me.gtorrent"}
 {
-	return App{}.run(argc, argv);
+    sess.set_alert_mask(libtorrent::alert::all_categories);
+    sess.start_dht();
+    sess.start_lsd();
+    sess.start_upnp();
+    sess.start_natpmp();
+}
+
+
+App::~App()
+{
+    sess.stop_dht();
+    sess.stop_lsd();
+    sess.stop_upnp();
+    sess.stop_natpmp();
 }
