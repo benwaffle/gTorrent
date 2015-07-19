@@ -10,6 +10,7 @@ TorrentListRow::TorrentListRow(torrent_handle handle) :
     status.set_halign(Gtk::Align::ALIGN_START);
     progressbar.set_hexpand(true);
     progressbar.set_valign(Gtk::Align::ALIGN_CENTER);
+    progressbar.set_show_text(true);
     eta.set_halign(Gtk::Align::ALIGN_END);
 
     grid.attach(name, 0, 0, 1, 1);
