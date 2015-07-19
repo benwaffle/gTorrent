@@ -30,3 +30,4 @@
 main
 resources.c
 *.kdev4
+build/
