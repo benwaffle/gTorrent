@@ -10,11 +10,11 @@ using namespace libtorrent;
 
 struct TorrentListWidget : public Gtk::ListBox
 {
-    TorrentListWidget(Gtk::ListBox::BaseObjectType *, const Glib::RefPtr<Gtk::Builder>);
+    TorrentListWidget(BaseObjectType *, const Glib::RefPtr<Gtk::Builder>&);
 
     std::map<torrent_handle, TorrentListRow *> torrents{};
 
-    void add(torrent_handle);
+    void add_torrent(torrent_handle);
 
     void update(std::vector<torrent_status>);
 };

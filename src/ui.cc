@@ -10,7 +10,6 @@
 #include <gtkmm/stock.h>
 
 #include "app.h"
-#include "TorrentListWidget.h"
 
 using namespace libtorrent;
 
@@ -80,13 +79,13 @@ void App::handle_alert(alert *al)
     switch (al->type()) {
         case state_update_alert::alert_type: {
             state_update_alert *update = static_cast<state_update_alert *>(al);
-            std::cout << update->message() << "\n";
+            torrent_list->update(update->status);
             break;
         }
 
         case torrent_added_alert::alert_type: {
             torrent_added_alert *added = static_cast<torrent_added_alert *>(al);
-            torrent_list->add(added->handle);
+            torrent_list->add_torrent(added->handle);
             break;
         }
     }

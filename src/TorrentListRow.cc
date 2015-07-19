@@ -1,9 +1,11 @@
 #include "TorrentListRow.h"
 
 TorrentListRow::TorrentListRow(torrent_handle handle) :
-        Gtk::ListBoxRow{},
+        Gtk::ListBoxRow(),
         handle{handle}
 {
+    this->set_selectable(false);
+
     name.set_halign(Gtk::Align::ALIGN_START);
     status.set_halign(Gtk::Align::ALIGN_START);
     progressbar.set_hexpand(true);
@@ -16,4 +18,5 @@ TorrentListRow::TorrentListRow(torrent_handle handle) :
     grid.attach(eta, 1, 1, 1, 1);
 
     this->add(grid);
+    this->show_all();
 }
