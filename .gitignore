@@ -31,3 +31,5 @@ main
 resources.c
 *.kdev4
 build/
+.idea/workspace.xml
+.idea/codeStyleSettings.xml
