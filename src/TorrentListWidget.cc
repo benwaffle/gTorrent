@@ -7,12 +7,9 @@ TorrentListWidget::TorrentListWidget(BaseObjectType *cobject,
 
 void TorrentListWidget::add_torrent(torrent_handle handle)
 {
-    std::cout << "adding " << handle.status().name << "\n";
     auto row = Gtk::manage(new TorrentListRow{handle});
     torrents[handle] = row;
-
     row->name.set_label(handle.status().name);
-
     add(*row);
 }
 

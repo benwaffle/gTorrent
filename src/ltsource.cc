@@ -8,7 +8,7 @@ LTSource::LTSource(std::shared_ptr<libtorrent::session> sess) :
 
 bool LTSource::prepare(int &timeout)
 {
-    timeout = 0; // no fds, don't block
+    timeout = -1;
     return check();
 }
 

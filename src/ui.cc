@@ -42,8 +42,8 @@ void App::on_activate()
 
     open_file->signal_clicked().connect([&]() {
         Gtk::FileChooserDialog fc{*window, "Open a .torrent"};
-        fc.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_ACCEPT);
-        fc.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+        fc.add_button("Open", Gtk::RESPONSE_ACCEPT);
+        fc.add_button("Cancel", Gtk::RESPONSE_CANCEL);
 
         auto filter = Gtk::FileFilter::create();
         filter->set_name(".torrent files");
@@ -63,8 +63,9 @@ void App::on_activate()
     lt.set_callback(sigc::mem_fun(*this, &App::handle_alert));
     lt.attach();
 
-    Glib::signal_timeout().connect(
-            sigc::bind_return(sigc::mem_fun(*sess, &libtorrent::session::post_torrent_updates), true), 100);
+    Glib::signal_timeout().connect(sigc::bind_return(
+            sigc::mem_fun(*sess, &libtorrent::session::post_torrent_updates),
+            true), 100);
     Glib::signal_timeout().connect(sigc::bind_return([&]() {
         session_status status = sess->status();
         window->set_title(std::to_string(status.download_rate) + " B/s");
